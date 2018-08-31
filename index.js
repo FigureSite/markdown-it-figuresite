@@ -10,6 +10,15 @@ function youtubeParser(url) {
   return match && match[7].length === 11 ? match[7] : url;
 }
 
+const mfcRegex = /^.*((myfigurecollection.net\/)|(v\/)|(\/u\/\w\/)|(item\/))\??v?=?([^#&\/?]*).*/;
+function mfcParser(url) {
+  const match = url.match(mfcRegex);
+  if (match) {
+    return match[6];
+  }
+  return '';
+}
+
 /* eslint-disable max-len */
 const vimeoRegex = /https?:\/\/(?:www\.|player\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/([^/]*)\/videos\/|album\/(\d+)\/video\/|)(\d+)(?:$|\/|\?)/;
 /* eslint-enable max-len */
@@ -74,6 +83,8 @@ function videoEmbed(md, options) {
       videoID = preziParser(videoID);
     } else if (serviceLower === 'osf') {
       videoID = mfrParser(videoID);
+    } else if (serviceLower === 'mfc') {
+      videoID = mfcParser(videoID);
     } else if (!options[serviceLower]) {
       return false;
     }
@@ -149,7 +160,9 @@ function tokenizeVideo(md, options) {
         'render?url=https://osf.io/' + videoID + '/?action=download%26mode=render");' +
         '    }); </script>';
     }
-
+    if (service === 'mfc') {
+      return `<a href="https://myfigurecollection.net/item/${videoID}"><img class="mfc-thumb" src="https://static.myfigurecollection.net/pics/figure/${videoID}.jpg"/></a>`;
+    }
     return videoID === '' ? '' :
       '<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item ' +
       service + '-player" type="text/html" width="' + (options[service].width) +
