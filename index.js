@@ -161,13 +161,7 @@ function tokenizeVideo(md, options) {
         '    }); </script>';
     }
     if (service === 'mfc') {
-      return `    <b-field label="Select a date">
-      <b-datepicker
-          placeholder="Type or select a date..."
-          icon="calendar-today"
-          :readonly="false">
-      </b-datepicker>
-  </b-field>`;
+      return `<div class="image" src="https://static.myfigurecollection.net/pics/figure/${videoID}.jpg"></div>`;
     }
     return videoID === '' ? '' :
       '<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item ' +
