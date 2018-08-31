@@ -161,7 +161,13 @@ function tokenizeVideo(md, options) {
         '    }); </script>';
     }
     if (service === 'mfc') {
-      return `<a href="https://myfigurecollection.net/item/${videoID}"><img class="mfc-thumb" src="https://static.myfigurecollection.net/pics/figure/${videoID}.jpg"/></a>`;
+      return `    <b-field label="Select a date">
+      <b-datepicker
+          placeholder="Type or select a date..."
+          icon="calendar-today"
+          :readonly="false">
+      </b-datepicker>
+  </b-field>`;
     }
     return videoID === '' ? '' :
       '<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item ' +
