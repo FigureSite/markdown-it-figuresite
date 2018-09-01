@@ -10,13 +10,10 @@ function youtubeParser(url) {
   return match && match[7].length === 11 ? match[7] : url;
 }
 
-const mfcRegex = /^.*((myfigurecollection.net\/)|(v\/)|(\/u\/\w\/)|(item\/))\??v?=?([^#&\/?]*).*/;
+const mfcRegex = /^http(?:s?):\/\/(?:www\.)?myfigurecollection\.net\/item\/([a-zA-Z0-9]{1,13}).*/;
 function mfcParser(url) {
   const match = url.match(mfcRegex);
-  if (match) {
-    return match[6];
-  }
-  return '';
+  return match[1];
 }
 
 /* eslint-disable max-len */
