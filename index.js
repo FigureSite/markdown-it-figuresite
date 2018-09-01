@@ -161,7 +161,7 @@ function tokenizeVideo(md, options) {
         '    }); </script>';
     }
     if (service === 'mfc') {
-      return `<div class="image" src="https://static.myfigurecollection.net/pics/figure/${videoID}.jpg"></div>`;
+      return `<a href="https://myfigurecollection.net/item/${videoID}"><img class="mfc-thumbnail" src="https://static.myfigurecollection.net/pics/figure/${videoID}.jpg"></img></a>`;
     }
     return videoID === '' ? '' :
       '<div class="embed-responsive embed-responsive-16by9"><iframe class="embed-responsive-item ' +
