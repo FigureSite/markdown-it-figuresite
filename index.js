@@ -10,10 +10,10 @@ function youtubeParser(url) {
   return match && match[7].length === 11 ? match[7] : url;
 }
 
-const mfcRegex = /^http(?:s?):\/\/(?:www\.)?myfigurecollection\.net\/item\/([a-zA-Z0-9]{1,13}).*/;
+const mfcRegex = /^http(?:s?):\/\/(?:.*\.)?(?:.\.)?myfigurecollection\.net\/item\/([a-zA-Z0-9]{1,13}).*/;
 function mfcParser(url) {
   const match = url.match(mfcRegex);
-  return match[1];
+  return match && typeof match[1] === 'string' ? match[1] : url;
 }
 
 /* eslint-disable max-len */
@@ -55,12 +55,14 @@ function videoEmbed(md, options) {
     var theState = state;
     const oldPos = state.pos;
 
-    if (state.src.charCodeAt(oldPos) !== 0x40/* @ */ ||
-        state.src.charCodeAt(oldPos + 1) !== 0x5B/* [ */) {
+    var parseTarget = state.src.substr(state.pos).split(')')[0] + ')'
+    var diff = state.src.length - parseTarget.length
+    if (parseTarget.charCodeAt(0) !== 0x40/* @ */ ||
+        parseTarget.charCodeAt(1) !== 0x5B/* [ */) {
       return false;
     }
 
-    const match = EMBED_REGEX.exec(state.src.slice(state.pos, state.src.length));
+    const match = EMBED_REGEX.exec(parseTarget);
 
     if (!match || match.length < 3) {
       return false;
@@ -69,6 +71,7 @@ function videoEmbed(md, options) {
     const service = match[1];
     videoID = match[2];
     const serviceLower = service.toLowerCase();
+    console.log(serviceLower)
 
     if (serviceLower === 'youtube') {
       videoID = youtubeParser(videoID);
@@ -109,8 +112,7 @@ function videoEmbed(md, options) {
       token.service = service;
       token.level = theState.level;
     }
-
-    theState.pos += theState.src.indexOf(')', theState.pos);
+    theState.pos += parseTarget.length-1;
     return true;
   }
 
@@ -193,5 +195,5 @@ module.exports = function videoPlugin(md, options) {
     theOptions = defaults;
   }
   theMd.renderer.rules.video = tokenizeVideo(theMd, theOptions);
-  theMd.inline.ruler.before('emphasis', 'video', videoEmbed(theMd, theOptions));
+  theMd.inline.ruler.after('emphasis', 'video', videoEmbed(theMd, theOptions));
 };
